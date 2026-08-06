@@ -1,0 +1,25 @@
+# Node
+node_modules/
+dist/
+.env
+.env.local
+
+# Java / Maven
+target/
+.mvn/
+*.class
+*.jar
+*.war
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.settings/
+.project/
+.classpath
+
+# OS / Misc
+Thumbs.db
+.DS_Store
+.gemini/

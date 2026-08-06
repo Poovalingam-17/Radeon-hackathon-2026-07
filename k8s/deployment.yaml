@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guardianai-backend
+  labels:
+    app: guardianai-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: guardianai-backend
+  template:
+    metadata:
+      labels:
+        app: guardianai-backend
+    spec:
+      containers:
+      - name: backend
+        image: guardianai-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql://guardianai-mysql:3306/guardianai_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "root"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "root"
+        - name: SPRING_DATA_REDIS_HOST
+          value: "guardianai-redis"
+        - name: OLLAMA_API_HOST
+          value: "http://guardianai-ollama:11434"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guardianai-frontend
+  labels:
+    app: guardianai-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: guardianai-frontend
+  template:
+    metadata:
+      labels:
+        app: guardianai-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: guardianai-frontend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80

@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: guardianai-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: guardianai_db
+      MYSQL_USER: guardian_user
+      MYSQL_PASSWORD: guardian_password
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "guardian_user", "-pguardian_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: guardianai-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Stubbed app services for Part 13
+  # backend-app:
+  #   build:
+  #     context: ../guardianai-backend
+  #     dockerfile: Dockerfile
+  #   container_name: guardianai-backend
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #     - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/guardianai_db
+  #     - SPRING_REDIS_HOST=redis
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+
+volumes:
+  mysql_data:
+  redis_data:
